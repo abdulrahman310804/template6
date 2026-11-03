@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#f8f5ee" />
+<title>Nama Anda — Laboratory Notebook Portfolio</title>
+<meta name="description" content="Portofolio Nama Anda — Mahasiswa Sains (MIPA) & Peneliti Muda." />
+<style>
+  /* ================= DESIGN TOKENS ================= */
+  :root{
+    --paper:#f8f5ee;
+    --paper-2:#f0ebde;
+    --surface:#ffffff;
+    --ink:#1e3a8a;          /* ink blue — seperti pena */
+    --ink-2:#3b5bab;
+    --text:#1f2937;
+    --text-soft:#4b5563;
+    --muted:#6b7280;
+    --line:#d6d0bf;
+    --line-strong:#b8b1a0;
+    --grid:#e8e3d5;
+    --red:#dc2626;          /* anotasi merah */
+    --red-dark:#991b1b;
+    --green:#15803d;
+    --gold:#a16207;
+    --radius:3px;
+    --radius-sm:2px;
+    --shadow:0 1px 3px rgba(30,58,138,.08),0 4px 12px rgba(30,58,138,.05);
+    --shadow-sm:0 1px 2px rgba(30,58,138,.06);
+    --shadow-lg:0 4px 20px rgba(30,58,138,.12);
+    --maxw:1140px;
+    --nav-h:64px;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    --mono:"JetBrains Mono","Cascadia Code","SF Mono","Fira Code",Consolas,"Courier New",monospace;
+  }
+  [data-theme="dark"]{
+    --paper:#141a24;
+    --paper-2:#1c2430;
+    --surface:#1c2430;
+    --ink:#93c5fd;
+    --ink-2:#60a5fa;
+    --text:#e5e7eb;
+    --text-soft:#cbd5e1;
+    --muted:#94a3b8;
+    --line:#2a3547;
+    --line-strong:#3a4658;
+    --grid:#1f2a3a;
+    --red:#f87171;
+    --red-dark:#fca5a5;
+    --green:#4ade80;
+    --gold:#fbbf24;
+    --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.3);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+    --shadow-lg:0 4px 20px rgba(0,0,0,.5);
+  }
+
+  /* ================= RESET ================= */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{
+    scroll-behavior:smooth;
+    scroll-padding-top:calc(var(--nav-h) + 12px);
+    -webkit-text-size-adjust:100%;
+  }
+  body{
+    font-family:var(--sans);
+    background:var(--paper);
+    color:var(--text);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    font-size:16px;
+    position:relative;
+    transition:background-color .3s,color .3s;
+    /* Grid paper background */
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:24px 24px;
+    background-attachment:fixed;
+  }
+  /* Left red margin line — like notebook */
+  body::before{
+    content:"";
+    position:fixed;
+    top:0;bottom:0;left:clamp(20px,4vw,56px);
+    width:2px;
+    background:color-mix(in srgb,var(--red) 35%,transparent);
+    z-index:1;
+    pointer-events:none;
+  }
+  /* Left margin punch holes decoration (desktop only) */
+  body::after{
+    content:"";
+    position:fixed;
+    left:clamp(8px,1.5vw,20px);
+    top:15%;
+    height:70%;
+    width:12px;
+    background-image:radial-gradient(circle at center,var(--line-strong) 4px,transparent 4.5px);
+    background-size:12px 80px;
+    background-repeat:repeat-y;
+    opacity:.6;
+    z-index:1;
+    pointer-events:none;
+  }
+  @media (max-width:900px){
+    body::before{left:24px}
+    body::after{display:none}
+  }
+  @media (max-width:640px){
+    body::before{left:16px;width:1.5px}
+  }
+
+  img{max-width:100%;display:block}
+  a{color:var(--ink);text-decoration:none;transition:color .2s}
+  a:hover{color:var(--red);text-decoration:underline;text-underline-offset:2px}
+  ul{list-style:none}
+  button{font:inherit;color:inherit;cursor:pointer}
+
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:700;line-height:1.2;color:var(--text)}
+  .mono{font-family:var(--mono)}
+
+  /* Everything sits above the background decorations */
+  body > *{position:relative;z-index:2}
+
+  /* ================= NAVBAR ================= */
+  nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;justify-content:space-between;align-items:center;
+    min-height:var(--nav-h);
+    padding:.75rem clamp(20px,4vw,56px) .75rem clamp(70px,8vw,90px);
+    background:color-mix(in srgb,var(--paper) 92%,transparent);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-strong);
+    font-family:var(--mono);
+    font-size:.82rem;
+  }
+  .nav-logo{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--text);
+    letter-spacing:-.3px;
+    display:inline-flex;align-items:center;gap:.4rem;
+  }
+  .nav-logo::before{
+    content:"§";
+    color:var(--red);
+    font-family:var(--serif);
+    font-size:1.3rem;
+    font-weight:700;
+  }
+  .nav-logo span{color:var(--ink);font-family:var(--mono);font-size:.85em;letter-spacing:0}
+
+  .nav-links{display:flex;gap:1.5rem;list-style:none}
+  .nav-links a{
+    color:var(--text-soft);
+    font-weight:500;
+    position:relative;
+    padding:.2rem 0;
+    font-size:.78rem;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .nav-links a::before{
+    content:"[";
+    margin-right:.15rem;
+    color:var(--line-strong);
+    opacity:0;
+    transition:opacity .2s;
+  }
+  .nav-links a::after{
+    content:"]";
+    margin-left:.15rem;
+    color:var(--line-strong);
+    opacity:0;
+    transition:opacity .2s;
+  }
+  .nav-links a:hover{color:var(--red)}
+  .nav-links a:hover::before,
+  .nav-links a:hover::after{opacity:1}
+
+  .nav-actions{display:flex;gap:.4rem;align-items:center}
+  .icon-btn{
+    width:34px;height:34px;
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    color:var(--text);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:.9rem;
+    border-radius:var(--radius);
+    transition:all .2s;
+    font-family:var(--mono);
+  }
+  .icon-btn:hover{
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+  }
+  .menu-btn{display:none;font-size:1.1rem}
+
+  @media (max-width:940px){
+    nav{padding:.7rem 1.2rem .7rem 60px}
+    .menu-btn{display:inline-flex}
+    .nav-links{
+      display:none;
+      position:absolute;top:100%;left:0;right:0;
+      background:var(--paper);
+      flex-direction:column;gap:0;
+      padding:.5rem 1rem 1rem;
+      border-bottom:1px solid var(--line-strong);
+      box-shadow:var(--shadow);
+    }
+    .nav-links.open{display:flex;animation:fadeDown .25s ease both}
+    .nav-links li a{
+      padding:.85rem 1rem;
+      display:block;
+      font-size:.8rem;
+      background:var(--surface);
+      border:1px solid var(--line);
+      margin-top:.4rem;
+      border-radius:var(--radius);
+      color:var(--text);
+    }
+    .nav-links a::before,
+    .nav-links a::after{display:none}
+    .nav-links li a:hover{background:var(--paper-2);color:var(--red)}
+    @keyframes fadeDown{
+      from{opacity:0;transform:translateY(-6px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+  }
+  @media (max-width:400px){
+    nav{padding-left:44px}
+    .nav-logo{font-size:1rem}
+    .nav-logo::before{font-size:1.1rem}
+  }
+
+  /* ================= LAYOUT ================= */
+  section{
+    padding:4.5rem clamp(20px,4vw,56px) 4.5rem clamp(70px,8vw,90px);
+    position:relative;
+  }
+  .container{max-width:var(--maxw);margin:0 auto;width:100%}
+  .section-head{margin-bottom:2.5rem}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:.6rem;
+    font-family:var(--mono);
+    font-size:.72rem;font-weight:600;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:1rem;
+    padding:.3rem .7rem;
+    border:1px solid var(--red);
+    background:color-mix(in srgb,var(--red) 6%,transparent);
+  }
+  .eyebrow::before{
+    content:"§";
+    font-family:var(--serif);
+    font-size:.9rem;
+    font-weight:700;
+  }
+  h2.section-title{
+    font-size:clamp(1.7rem,3.5vw,2.5rem);
+    letter-spacing:-.8px;
+    line-height:1.1;
+    color:var(--text);
+  }
+  h2.section-title em{
+    font-style:italic;
+    color:var(--ink);
+    font-family:var(--serif);
+  }
+  .section-sub{
+    color:var(--text-soft);
+    margin-top:.7rem;
+    max-width:660px;
+    font-size:1rem;
+    font-family:var(--serif);
+    font-style:italic;
+  }
+
+  /* ================= HERO ================= */
+  #cover{
+    min-height:calc(100svh - var(--nav-h));
+    display:flex;align-items:center;
+    padding-top:3rem;padding-bottom:3rem;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:3rem;
+    align-items:center;
+    width:100%;
+  }
+  .hero-text .protocol{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:.7rem;
+    font-weight:600;
+    letter-spacing:2.5px;
+    text-transform:uppercase;
+    color:var(--red);
+    padding:.4rem .8rem;
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-left:3px solid var(--red);
+    margin-bottom:1.4rem;
+  }
+  .hero-text h1{
+    font-size:clamp(2.2rem,5.5vw,3.8rem);
+    line-height:1.05;
+    letter-spacing:-1.2px;
+    margin-bottom:1.3rem;
+    font-weight:700;
+    color:var(--text);
+  }
+  .hero-text h1 .subj{
+    color:var(--ink);
+    font-style:italic;
+    position:relative;
+  }
+  .hero-text h1 .subj::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:.1em;
+    height:6px;
+    background:color-mix(in srgb,var(--red) 25%,transparent);
+    z-index:-1;
+    transform:rotate(-.5deg);
+  }
+  .hero-abstract{
+    color:var(--text-soft);
+    font-size:1.05rem;
+    line-height:1.75;
+    margin-bottom:1.8rem;
+    max-width:560px;
+    font-family:var(--serif);
+  }
+  .hero-abstract strong{color:var(--text);font-weight:700}
+  .hero-meta{
+    display:flex;gap:1.5rem;flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:.78rem;
+    color:var(--muted);
+    padding-top:1.2rem;
+    border-top:1px dashed var(--line-strong);
+    margin-bottom:1.8rem;
+    max-width:520px;
+  }
+  .hero-meta span{
+    display:inline-flex;align-items:center;gap:.4rem;
+  }
+  .hero-meta span::before{
+    content:"▸";
+    color:var(--red);
+  }
+  .hero-cta{display:flex;gap:.7rem;flex-wrap:wrap}
+
+  .hero-figure{
+    display:flex;flex-direction:column;align-items:center;
+    position:relative;
+  }
+  .photo-frame{
+    position:relative;
+    width:100%;max-width:320px;
+    aspect-ratio:4 / 5;
+    background:var(--surface);
+    border:1px solid var(--ink);
+    padding:8px;
+    box-shadow:var(--shadow-lg);
+    transform:rotate(-1deg);
+    transition:transform .3s;
+  }
+  .photo-frame:hover{transform:rotate(0deg)}
+  .photo-frame img{
+    width:100%;height:100%;
+    object-fit:cover;
+    filter:grayscale(.15) contrast(1.05) sepia(.06);
+  }
+  /* corner tape marks */
+  .photo-frame::before,
+  .photo-frame::after{
+    content:"";
+    position:absolute;
+    width:48px;height:16px;
+    background:color-mix(in srgb,var(--gold) 55%,transparent);
+    border:1px solid color-mix(in srgb,var(--gold) 70%,transparent);
+  }
+  .photo-frame::before{top:-8px;left:-16px;transform:rotate(-30deg)}
+  .photo-frame::after{bottom:-8px;right:-16px;transform:rotate(-30deg)}
+  .photo-caption{
+    margin-top:1.2rem;
+    text-align:center;
+    max-width:320px;
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--muted);
+    letter-spacing:.4px;
+    line-height:1.5;
+  }
+  .photo-caption strong{
+    color:var(--text);
+    display:block;
+    font-family:var(--sans);
+    font-size:.82rem;
+    font-weight:600;
+    margin-bottom:.2rem;
+    letter-spacing:0;
+  }
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:2.5rem;text-align:center}
+    .hero-figure{order:-1}
+    .hero-abstract{margin-left:auto;margin-right:auto}
+    .hero-meta{justify-content:center;margin-left:auto;margin-right:auto}
+    .hero-cta{justify-content:center}
+    .photo-frame{max-width:260px}
+  }
+  @media (max-width:480px){
+    #cover{min-height:auto;padding-top:2rem;padding-bottom:3rem}
+    .hero-cta{flex-direction:column;width:100%}
+    .hero-cta .btn{width:100%}
+    .photo-frame{max-width:200px;padding:6px}
+    .hero-meta{font-size:.72rem;gap:1rem}
+  }
+
+  /* ================= BUTTONS ================= */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+    min-height:44px;padding:.7rem 1.4rem;
+    font-family:var(--mono);
+    font-size:.78rem;font-weight:600;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    background:var(--surface);
+    transition:all .2s;
+    border-radius:var(--radius);
+    text-decoration:none;
+    box-shadow:2px 2px 0 var(--ink);
+  }
+  .btn:hover{
+    text-decoration:none;
+    transform:translate(-1px,-1px);
+    box-shadow:3px 3px 0 var(--ink);
+    background:var(--paper-2);
+  }
+  .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+  .btn-primary{
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+  }
+  .btn-primary:hover{
+    background:var(--red);
+    color:#fff;
+    border-color:var(--red);
+    box-shadow:3px 3px 0 var(--red-dark);
+  }
+
+  /* ================= PROFILE TABLE ================= */
+  #profile{padding-top:1.5rem}
+  .profile-table{
+    border:1px solid var(--ink);
+    background:var(--surface);
+    box-shadow:var(--shadow);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .profile-table-head{
+    background:var(--ink);
+    color:var(--paper);
+    padding:.55rem 1rem;
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:flex;justify-content:space-between;align-items:center;
+    gap:1rem;
+  }
+  .profile-table-head .tag{
+    font-size:.68rem;
+    padding:.15rem .5rem;
+    background:var(--red);
+    color:#fff;
+    border-radius:2px;
+    letter-spacing:1px;
+  }
+  .profile-row{
+    display:grid;
+    grid-template-columns:140px 1fr;
+    border-top:1px solid var(--line);
+  }
+  .profile-row:first-of-type{border-top:0}
+  .profile-key{
+    padding:.9rem 1rem;
+    font-family:var(--mono);
+    font-size:.78rem;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    border-right:1px solid var(--line);
+    background:var(--paper-2);
+  }
+  .profile-val{
+    padding:.9rem 1rem;
+    font-family:var(--sans);
+    font-size:.95rem;
+    color:var(--text);
+    font-weight:500;
+    word-break:break-word;
+  }
+  @media (max-width:600px){
+    .profile-row{grid-template-columns:1fr}
+    .profile-key{
+      border-right:0;
+      border-bottom:1px solid var(--line);
+      padding:.5rem 1rem;
+      font-size:.7rem;
+      background:var(--paper-2);
+    }
+    .profile-val{padding:.6rem 1rem .9rem;font-size:.9rem}
+  }
+
+  /* ================= ABOUT ================= */
+  #about .about-grid{
+    display:grid;
+    grid-template-columns:1.35fr .65fr;
+    gap:2.5rem;
+    align-items:start;
+  }
+  #about .body-text p{
+    color:var(--text-soft);
+    font-family:var(--serif);
+    font-size:1.02rem;
+    line-height:1.8;
+    margin-bottom:1.2rem;
+  }
+  #about .body-text p strong{color:var(--text);font-weight:700}
+  #about .body-text p:first-child::first-letter{
+    font-family:var(--serif);
+    font-size:3.4rem;
+    font-weight:700;
+    float:left;
+    line-height:.85;
+    padding:.35rem .6rem .15rem 0;
+    color:var(--ink);
+  }
+  .info-card{
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-top:3px solid var(--red);
+    padding:1.5rem 1.3rem;
+    position:sticky;
+    top:calc(var(--nav-h) + 20px);
+    box-shadow:var(--shadow);
+    border-radius:var(--radius);
+  }
+  .info-card h4{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:1rem;
+    padding-bottom:.6rem;
+    border-bottom:1px dashed var(--line-strong);
+  }
+  .info-list li{
+    display:flex;justify-content:space-between;
+    gap:1rem;
+    padding:.6rem 0;
+    border-bottom:1px dotted var(--line);
+    font-size:.9rem;
+  }
+  .info-list li:last-child{border:0;padding-bottom:0}
+  .info-list .label{
+    color:var(--muted);
+    font-family:var(--mono);
+    font-size:.78rem;
+    flex-shrink:0;
+  }
+  .info-list .value{
+    font-family:var(--sans);
+    font-weight:600;
+    color:var(--text);
+    text-align:right;
+    word-break:break-word;
+  }
+  @media (max-width:860px){
+    #about .about-grid{grid-template-columns:1fr;gap:2rem}
+    .info-card{position:static}
+    #about .body-text p:first-child::first-letter{font-size:3rem}
+  }
+
+  /* ================= FIGURE DIVIDER ================= */
+  .fig-divider{
+    padding:2.5rem clamp(20px,4vw,56px) 2.5rem clamp(70px,8vw,90px);
+    max-width:var(--maxw);
+    margin:0 auto;
+    text-align:center;
+  }
+  .fig-divider .fig-cap{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--muted);
+    letter-spacing:.5px;
+    padding-top:.6rem;
+    border-top:1px solid var(--line-strong);
+    max-width:520px;
+  }
+  .fig-divider .fig-cap::before{
+    content:"Fig. 1 — ";
+    color:var(--red);
+    font-weight:600;
+  }
+  .fig-divider .equations{
+    font-family:var(--serif);
+    font-size:1.8rem;
+    color:var(--ink);
+    letter-spacing:.4rem;
+    margin-bottom:.3rem;
+    opacity:.5;
+  }
+  .fig-divider .equations span:nth-child(2n){color:var(--red);opacity:.6}
+
+  /* ================= EDUCATION & EXPERIENCE (LOGBOOK) ================= */
+  .logbook{
+    border:1px solid var(--line-strong);
+    background:var(--surface);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow-sm);
+  }
+  .log-entry{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    border-top:1px solid var(--line);
+    position:relative;
+  }
+  .log-entry:first-child{border-top:0}
+  .log-date{
+    padding:1.4rem .8rem 1.4rem 1.2rem;
+    background:var(--paper-2);
+    border-right:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--ink);
+    font-weight:600;
+    line-height:1.4;
+    letter-spacing:.3px;
+    position:relative;
+  }
+  .log-date::before{
+    content:"▸";
+    display:block;
+    color:var(--red);
+    font-size:1rem;
+    margin-bottom:.3rem;
+    font-family:var(--mono);
+  }
+  .log-date .year{
+    display:block;
+    font-size:.88rem;
+    color:var(--text);
+    font-weight:700;
+    margin-bottom:.1rem;
+  }
+  .log-body{
+    padding:1.3rem 1.4rem;
+  }
+  .log-title{
+    font-family:var(--serif);
+    font-size:1.12rem;
+    font-weight:700;
+    line-height:1.3;
+    color:var(--text);
+    margin-bottom:.2rem;
+  }
+  .log-sub{
+    font-family:var(--mono);
+    font-size:.78rem;
+    color:var(--muted);
+    margin-bottom:.6rem;
+    letter-spacing:.3px;
+  }
+  .log-desc{
+    font-family:var(--serif);
+    color:var(--text-soft);
+    font-size:.95rem;
+    line-height:1.7;
+  }
+  @media (max-width:640px){
+    .log-entry{grid-template-columns:1fr}
+    .log-date{
+      border-right:0;
+      border-bottom:1px solid var(--line);
+      padding:.7rem 1rem;
+      display:flex;align-items:center;gap:.5rem;
+    }
+    .log-date::before{margin-bottom:0}
+    .log-date .year{display:inline;margin-right:.4rem}
+    .log-body{padding:1.1rem 1rem}
+    .log-title{font-size:1.02rem}
+  }
+
+  /* ================= SKILLS ================= */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:1.2rem;
+  }
+  .skill-cat{
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:1.3rem 1.4rem;
+    box-shadow:var(--shadow-sm);
+    position:relative;
+  }
+  .skill-cat::before{
+    content:"§";
+    position:absolute;
+    top:-10px;left:14px;
+    background:var(--red);
+    color:#fff;
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);
+    font-size:.9rem;
+    font-weight:700;
+    border-radius:50%;
+  }
+  .skill-cat h4{
+    font-family:var(--mono);
+    font-size:.74rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--text);
+    margin-bottom:.9rem;
+    margin-top:.2rem;
+    padding-bottom:.6rem;
+    border-bottom:1px dashed var(--line-strong);
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:.45rem}
+  .chip{
+    font-family:var(--mono);
+    font-size:.75rem;
+    padding:.32rem .65rem;
+    background:var(--paper-2);
+    color:var(--text-soft);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    transition:all .15s;
+    line-height:1.3;
+  }
+  .chip:hover{
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+    transform:translateY(-1px);
+  }
+
+  /* ================= PROJECTS ================= */
+  .projects-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:1.4rem;
+  }
+  .project{
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:transform .25s,box-shadow .25s,border-color .25s;
+    box-shadow:var(--shadow-sm);
+    position:relative;
+  }
+  .project:hover{
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-lg);
+    border-color:var(--ink);
+  }
+  .project-thumb{
+    height:140px;
+    background:linear-gradient(135deg,var(--paper-2),var(--line));
+    display:flex;align-items:center;justify-content:center;
+    font-size:2.8rem;
+    position:relative;
+    border-bottom:1px solid var(--line-strong);
+    overflow:hidden;
+  }
+  .project:nth-child(3n+2) .project-thumb{
+    background:linear-gradient(135deg,color-mix(in srgb,var(--green) 8%,var(--paper-2)),color-mix(in srgb,var(--green) 15%,var(--line)));
+  }
+  .project:nth-child(3n+3) .project-thumb{
+    background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 8%,var(--paper-2)),color-mix(in srgb,var(--gold) 18%,var(--line)));
+  }
+  .project-thumb::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:12px 12px;
+    opacity:.7;
+  }
+  .project-thumb .emoji{
+    position:relative;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.12));
+  }
+  .proj-label{
+    position:absolute;
+    top:8px;left:10px;
+    font-family:var(--mono);
+    font-size:.6rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--paper);
+    background:var(--red);
+    padding:.2rem .5rem;
+    border-radius:2px;
+  }
+  .project-body{
+    padding:1.2rem 1.3rem;
+    flex:1;display:flex;flex-direction:column;
+  }
+  .project-body h3{
+    font-family:var(--serif);
+    font-size:1.08rem;
+    font-weight:700;
+    line-height:1.3;
+    margin-bottom:.4rem;
+    color:var(--text);
+  }
+  .project-body p{
+    color:var(--text-soft);
+    font-size:.88rem;
+    line-height:1.6;
+    margin-bottom:.9rem;
+    flex:1;
+  }
+  .tags{
+    display:flex;flex-wrap:wrap;gap:.3rem;
+    margin-bottom:.9rem;
+    padding-top:.7rem;
+    border-top:1px dashed var(--line);
+  }
+  .tag{
+    font-family:var(--mono);
+    font-size:.65rem;
+    font-weight:600;
+    letter-spacing:.3px;
+    padding:.15rem .45rem;
+    background:var(--paper-2);
+    color:var(--muted);
+    border-radius:2px;
+  }
+  .project-links{
+    display:flex;gap:1rem;flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:.75rem;
+    font-weight:600;
+    letter-spacing:.5px;
+  }
+  .project-links a{
+    color:var(--ink);
+    padding:.3rem 0;
+    border-bottom:1px solid var(--ink);
+  }
+  .project-links a:hover{
+    color:var(--red);
+    border-color:var(--red);
+    text-decoration:none;
+  }
+
+  /* ================= CERTIFICATES ================= */
+  .cert-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:1rem;
+  }
+  .cert{
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:1.1rem 1.2rem;
+    display:flex;gap:.9rem;align-items:flex-start;
+    transition:all .2s;
+    box-shadow:var(--shadow-sm);
+    position:relative;
+  }
+  .cert::before{
+    content:"";
+    position:absolute;
+    top:10px;right:10px;
+    width:8px;height:8px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 20%,transparent);
+  }
+  .cert:hover{
+    transform:translateY(-2px);
+    box-shadow:var(--shadow);
+    border-color:var(--ink);
+  }
+  .cert-icon{
+    flex-shrink:0;
+    width:40px;height:40px;
+    background:var(--paper-2);
+    border:1px solid var(--line-strong);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.1rem;
+    border-radius:var(--radius);
+  }
+  .cert-body{flex:1;min-width:0}
+  .cert-body h4{
+    font-family:var(--sans);
+    font-size:.92rem;
+    font-weight:700;
+    line-height:1.3;
+    color:var(--text);
+    margin-bottom:.2rem;
+    word-break:break-word;
+  }
+  .cert-body p{
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--muted);
+    letter-spacing:.2px;
+  }
+  .cert-body a{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    color:var(--ink);
+    border-bottom:1px solid var(--ink);
+    display:inline-block;
+    margin-top:.5rem;
+    padding-bottom:1px;
+  }
+  .cert-body a:hover{color:var(--red);border-color:var(--red);text-decoration:none}
+
+  /* ================= ACHIEVEMENTS (TABLE) ================= */
+  .ach-table{
+    border:1px solid var(--ink);
+    background:var(--surface);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .ach-table-head{
+    background:var(--ink);
+    color:var(--paper);
+    padding:.7rem 1rem;
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:grid;
+    grid-template-columns:60px 1fr 100px;
+    gap:1rem;
+  }
+  .ach-row{
+    display:grid;
+    grid-template-columns:60px 1fr 100px;
+    gap:1rem;
+    padding:.9rem 1rem;
+    border-top:1px solid var(--line);
+    align-items:center;
+    transition:background .15s;
+  }
+  .ach-row:hover{background:var(--paper-2)}
+  .ach-num{
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--red);
+    font-weight:700;
+  }
+  .ach-title{
+    font-family:var(--sans);
+    font-size:.9rem;
+    color:var(--text);
+    font-weight:500;
+  }
+  .ach-val{
+    font-family:var(--mono);
+    font-size:.88rem;
+    font-weight:700;
+    color:var(--ink);
+    text-align:right;
+    letter-spacing:.3px;
+  }
+  @media (max-width:600px){
+    .ach-table-head,
+    .ach-row{grid-template-columns:40px 1fr 70px;gap:.6rem;padding:.7rem .8rem}
+    .ach-table-head{font-size:.65rem;letter-spacing:1px}
+    .ach-title{font-size:.82rem}
+    .ach-val{font-size:.78rem}
+  }
+
+  /* ================= CONTACT ================= */
+  #contact{text-align:center}
+  #contact .section-head{text-align:center}
+  #contact .section-sub{margin-left:auto;margin-right:auto}
+  .contact-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:1rem;
+    margin-top:2rem;
+    text-align:left;
+  }
+  .contact-card{
+    background:var(--surface);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    padding:1.2rem 1.1rem;
+    min-height:118px;
+    display:flex;flex-direction:column;
+    transition:all .2s;
+    box-shadow:var(--shadow-sm);
+    color:var(--text);
+    position:relative;
+    overflow:hidden;
+  }
+  .contact-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;
+    width:4px;height:100%;
+    background:var(--ink);
+  }
+  .contact-card:hover{
+    transform:translate(-1px,-1px);
+    box-shadow:3px 3px 0 var(--ink);
+    border-color:var(--ink);
+    text-decoration:none;
+  }
+  .contact-card:hover::before{background:var(--red)}
+  .contact-card .ic{
+    font-size:1.4rem;
+    margin-bottom:.5rem;
+  }
+  .contact-card .k{
+    font-family:var(--mono);
+    font-size:.65rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:.2rem;
+  }
+  .contact-card .v{
+    font-family:var(--sans);
+    font-weight:600;
+    color:var(--text);
+    font-size:.88rem;
+    word-break:break-word;
+    line-height:1.4;
+  }
+
+  /* ================= FOOTER ================= */
+  footer{
+    padding:2.5rem clamp(20px,4vw,56px) 2rem clamp(70px,8vw,90px);
+    border-top:1px double var(--line-strong);
+    background:color-mix(in srgb,var(--paper-2) 50%,transparent);
+    text-align:center;
+    font-family:var(--mono);
+    font-size:.75rem;
+    color:var(--muted);
+  }
+  footer .signature{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:1.1rem;
+    color:var(--text);
+    margin-bottom:.5rem;
+  }
+  footer .signature::before{content:"— ";color:var(--red)}
+  footer .signature::after{content:" —";color:var(--red)}
+  footer p{margin-top:.4rem;letter-spacing:.3px}
+  footer p strong{color:var(--red)}
+
+  /* ================= REVEAL ================= */
+  .reveal{
+    opacity:0;transform:translateY(24px);
+    transition:opacity .7s ease,transform .7s ease;
+  }
+  .reveal.visible{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+  }
+
+  /* ================= MOBILE ================= */
+  @media (max-width:640px){
+    section{padding:3rem 1.2rem 3rem 44px}
+    .fig-divider{padding-left:44px;padding-right:1.2rem}
+    footer{padding-left:44px;padding-right:1.2rem}
+    .section-head{margin-bottom:2rem}
+    h2.section-title{letter-spacing:-.4px}
+    body::before{left:16px}
+    .hero-text h1{letter-spacing:-.8px}
+  }
+  @media (max-width:380px){
+    section{padding:2.5rem 1rem 2.5rem 40px}
+    .fig-divider{padding-left:40px}
+    footer{padding-left:40px}
+    .contact-grid{grid-template-columns:1fr}
+    .hero-text h1{font-size:1.8rem}
+  }
+  @supports (padding: max(0px)){
+    footer{padding-bottom:max(2rem, env(safe-area-inset-bottom))}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav>
+  <a href="#cover" class="nav-logo">Notebook<span>.</span></a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">Tentang</a></li>
+    <li><a href="#education">Pendidikan</a></li>
+    <li><a href="#experience">Pengalaman</a></li>
+    <li><a href="#skills">Keahlian</a></li>
+    <li><a href="#projects">Karya</a></li>
+    <li><a href="#certs">Sertifikat</a></li>
+    <li><a href="#contact">Kontak</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="Ganti tema">🌙</button>
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+  </div>
+</nav>
+
+<!-- ================= 1. COVER ================= -->
+<section id="cover">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="protocol">Lab Notebook · Rev. 2024</div>
+        <h1>Halo, saya<br>Nama Anda.<br><span class="subj">Fisikawan Muda.</span></h1>
+        <p class="hero-abstract">
+          Mahasiswa <strong>S1 Fisika</strong> yang berfokus pada
+          <em>fisika material</em>, <em>komputasi</em>, dan <em>instrumentasi</em>.
+          Saya percaya bahwa setiap fenomena alam adalah persamaan yang menunggu
+          untuk dipecahkan.
+        </p>
+        <div class="hero-meta">
+          <span>Bandung, ID</span>
+          <span>IPK 3.76</span>
+          <span>Open to Research</span>
+        </div>
+        <div class="hero-cta">
+          <a href="#projects" class="btn btn-primary">Lihat Riset →</a>
+          <a href="#contact" class="btn">Kontak</a>
+        </div>
+      </div>
+      <figure class="hero-figure">
+        <div class="photo-frame">
+          <img src="https://i.pravatar.cc/500?img=33" alt="Foto Nama Anda" />
+        </div>
+        <figcaption class="photo-caption">
+          <strong>Fig. 1 — Foto Penulis</strong>
+          Laboratorium Fisika Material · 2024
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. PROFILE TABLE ================= -->
+<section id="profile">
+  <div class="container reveal">
+    <div class="profile-table">
+      <div class="profile-table-head">
+        <span>Table 1 — Identitas Penulis</span>
+        <span class="tag">PROFIL</span>
+      </div>
+      <div class="profile-row">
+        <div class="profile-key">Nama</div>
+        <div class="profile-val">Nama Anda, S.Si.</div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-key">Bidang</div>
+        <div class="profile-val">Fisika — Material &amp; Komputasi</div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-key">Afiliasi</div>
+        <div class="profile-val">Institut Teknologi Contoh</div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-key">Lokasi</div>
+        <div class="profile-val">Bandung, Indonesia</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FIGURE DIVIDER ================= -->
+<div class="fig-divider" aria-hidden="true">
+  <div class="equations"><span>∑</span><span>∫</span><span>∆</span><span>π</span><span>√</span><span>λ</span><span>∂</span></div>
+  <div class="fig-cap">Kuriositas adalah awal dari setiap penemuan ilmiah.</div>
+</div>
+
+<!-- ================= 3. ABOUT ================= -->
+<section id="about">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">I · Tentang Saya</span>
+      <h2 class="section-title">Kenali saya <em>lebih dekat</em></h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="body-text">
+        <p>
+          Saya adalah mahasiswa <strong>Fisika</strong> yang tertarik pada
+          <em>sifat material</em>, <em>simulasi komputasi</em>, dan
+          <em>instrumentasi ilmiah</em>. Bagi saya, fisika bukan sekadar
+          kumpulan rumus — ia adalah <strong>bahasa alam semesta</strong>
+          yang bisa kita pelajari untuk memahami segala sesuatu, dari
+          elektron yang melompat hingga galaksi yang berputar.
+        </p>
+        <p>
+          Selama kuliah, saya aktif sebagai <strong>asisten laboratorium
+          fisika dasar</strong>, terlibat dalam <strong>riset dosen</strong>
+          tentang material semikonduktor, dan mengikuti beberapa
+          <strong>kompetisi nasional</strong> seperti OSN-Pertamina dan
+          PKM (Program Kreativitas Mahasiswa). Saya juga aktif menulis
+          artikel sains populer di blog pribadi.
+        </p>
+        <p>
+          <strong>Tujuan saya:</strong> melanjutkan studi pascasarjana
+          dalam bidang <em>fisika material</em> dan berkontribusi pada
+          riset energi terbarukan di Indonesia — khususnya dalam
+          pengembangan sel surya berbasis material lokal.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <h4>Data Singkat</h4>
+        <ul class="info-list">
+          <li><span class="label">Nama</span><span class="value">Nama Anda</span></li>
+          <li><span class="label">Usia</span><span class="value">22 tahun</span></li>
+          <li><span class="label">Kota</span><span class="value">Bandung</span></li>
+          <li><span class="label">Bahasa</span><span class="value">ID, EN</span></li>
+          <li><span class="label">Fokus</span><span class="value">Fisika Material</span></li>
+          <li><span class="label">Email</span><span class="value">email@anda.com</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. EDUCATION ================= -->
+<section id="education">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">II · Pendidikan</span>
+      <h2 class="section-title">Riwayat <em>akademik</em></h2>
+      <p class="section-sub">Jejak pendidikan yang membentuk dasar keilmuan saya sebagai fisikawan.</p>
+    </div>
+
+    <div class="logbook">
+      <div class="log-entry">
+        <div class="log-date">
+          <span class="year">2020 — 2024</span>
+          S1 Fisika
+        </div>
+        <div class="log-body">
+          <div class="log-title">S1 Fisika — Institut Teknologi Contoh</div>
+          <div class="log-sub">IPK 3.76 / 4.00 · Predikat Cumlaude</div>
+          <p class="log-desc">Fokus pada fisika material, fisika komputasi, dan instrumentasi. Skripsi: "Analisis Sifat Optik dan Struktur Kristal Lapisan Tipis ZnO Doping Aluminium (AZO) Hasil Deposisi Metode Spray Pyrolysis".</p>
+        </div>
+      </div>
+      <div class="log-entry">
+        <div class="log-date">
+          <span class="year">2017 — 2020</span>
+          SMA IPA
+        </div>
+        <div class="log-body">
+          <div class="log-title">SMA Jurusan MIPA — SMA Negeri 1 Contoh</div>
+          <div class="log-sub">Peringkat 3 Paralel · Nilai Fisika 95</div>
+          <p class="log-desc">Aktif di tim Olimpiade Fisika, anggota Klub Astronomi, dan juara 2 OSN Fisika tingkat kabupaten. Ketua ekstrakurikuler KIR (Karya Ilmiah Remaja).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. EXPERIENCE ================= -->
+<section id="experience">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">III · Pengalaman</span>
+      <h2 class="section-title">Pengalaman <em>riset &amp; lab</em></h2>
+      <p class="section-sub">Asisten lab, riset dosen, magang, dan pengalaman organisasi ilmiah.</p>
+    </div>
+
+    <div class="logbook">
+      <div class="log-entry">
+        <div class="log-date">
+          <span class="year">2023 — 2024</span>
+          Riset
+        </div>
+        <div class="log-body">
+          <div class="log-title">Asisten Peneliti — Fisika Material</div>
+          <div class="log-sub">Laboratorium Fisika Material Kampus</div>
+          <p class="log-desc">Membantu riset dosen dalam fabrikasi lapisan tipis ZnO:Al (AZO) menggunakan metode spray pyrolysis. Bertanggung jawab atas karakterisasi XRD, UV-Vis, dan analisis data menggunakan OriginPro &amp; Python.</p>
+        </div>
+      </div>
+      <div class="log-entry">
+        <div class="log-date">
+          <span class="year">2022 — 2024</span>
+          Lab
+        </div>
+        <div class="log-body">
+          <div class="log-title">Asisten Laboratorium Fisika Dasar</div>
+          <div class="log-sub">Laboratorium Fisika Dasar — 5 Semester</div>
+          <p class="log-desc">Mendampingi praktikum 200+ mahasiswa dalam 5 modul (mekanika, kalor, optik, listrik, magnet). Bertanggung jawab atas kalibrasi alat, penilaian laporan, dan asistensi pengolahan data ketidakpastian.</p>
+        </div>
+      </div>
+      <div class="log-entry">
+        <div class="log-date">
+          <span class="year">Jun — Agu 2023</span>
+          Magang
+        </div>
+        <div class="log-body">
+          <div class="log-title">Magang — Quality Control Lab</div>
+          <div class="log-sub">PT Manufaktur Contoh — Cikarang</div>
+          <p class="log-desc">Terlibat dalam pengujian material menggunakan SEM, XRD, dan uji tarik. Menyusun laporan QC mingguan dan membantu validasi prosedur pengujian sesuai ISO 17025.</p>
+        </div>
+      </div>
+      <div class="log-entry">
+        <div class="log-date">
+          <span class="year">2021 — 2023</span>
+          Organisasi
+        </div>
+        <div class="log-body">
+          <div class="log-title">Divisi Riset — Himpunan Mahasiswa Fisika</div>
+          <div class="log-sub">HIMAFI Kampus</div>
+          <p class="log-desc">Mengoordinasikan pelatihan Python untuk fisika, mengelola jurnal himpunan, dan menjadi LO pada seminar nasional fisika terapan.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. SKILLS ================= -->
+<section id="skills">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">IV · Keahlian</span>
+      <h2 class="section-title">Alat <em>&amp; kompetensi</em></h2>
+      <p class="section-sub">Software ilmiah, teknik laboratorium, dan skill analisis data.</p>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-cat">
+        <h4>💻 Software Ilmiah</h4>
+        <div class="chips">
+          <span class="chip">Python</span>
+          <span class="chip">MATLAB</span>
+          <span class="chip">OriginPro</span>
+          <span class="chip">LaTeX</span>
+          <span class="chip">Mathematica</span>
+          <span class="chip">R</span>
+          <span class="chip">Gnuplot</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <h4>🔬 Teknik Laboratorium</h4>
+        <div class="chips">
+          <span class="chip">XRD</span>
+          <span class="chip">SEM-EDX</span>
+          <span class="chip">UV-Vis</span>
+          <span class="chip">FTIR</span>
+          <span class="chip">Spray Pyrolysis</span>
+          <span class="chip">Spin Coating</span>
+          <span class="chip">Kalibrasi Alat</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <h4>📊 Analisis Data</h4>
+        <div class="chips">
+          <span class="chip">Analisis Galat</span>
+          <span class="chip">Regresi Linear</span>
+          <span class="chip">Fitting Kurva</span>
+          <span class="chip">Pandas</span>
+          <span class="chip">NumPy</span>
+          <span class="chip">SciPy</span>
+          <span class="chip">Matplotlib</span>
+        </div>
+      </div>
+
+      <div class="skill-cat">
+        <h4>🗣️ Soft Skill</h4>
+        <div class="chips">
+          <span class="chip">Scientific Writing</span>
+          <span class="chip">Presentasi Ilmiah</span>
+          <span class="chip">Kerja Tim</span>
+          <span class="chip">Problem Solving</span>
+          <span class="chip">Bahasa Inggris</span>
+          <span class="chip">Critical Thinking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. PROJECTS ================= -->
+<section id="projects">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">V · Karya</span>
+      <h2 class="section-title">Proyek <em>&amp; publikasi</em></h2>
+      <p class="section-sub">Riset, eksperimen, dan karya ilmiah yang pernah saya kerjakan.</p>
+    </div>
+
+    <div class="projects-grid">
+      <article class="project">
+        <div class="project-thumb">
+          <span class="proj-label">Skripsi</span>
+          <span class="emoji">🔬</span>
+        </div>
+        <div class="project-body">
+          <h3>Lapisan Tipis ZnO:Al (AZO)</h3>
+          <p>Fabrikasi dan karakterisasi lapisan tipis ZnO doping Al untuk aplikasi sel surya. Dideposisi dengan spray pyrolysis, dikarakterisasi dengan XRD &amp; UV-Vis.</p>
+          <div class="tags"><span class="tag">Material</span><span class="tag">XRD</span><span class="tag">UV-Vis</span></div>
+          <div class="project-links">
+            <a href="#">Paper →</a>
+            <a href="#">Poster</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-thumb">
+          <span class="proj-label">Komputasi</span>
+          <span class="emoji">⚛️</span>
+        </div>
+        <div class="project-body">
+          <h3>Simulasi Gerak Osilasi</h3>
+          <p>Simulasi numerik osilator harmonik teredam menggunakan Python &amp; Runge-Kutta. Visualisasi trayektori fase &amp; analisis energi.</p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">Numerik</span></div>
+          <div class="project-links">
+            <a href="#">GitHub →</a>
+            <a href="#">Demo</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-thumb">
+          <span class="proj-label">PKM</span>
+          <span class="emoji">🌞</span>
+        </div>
+        <div class="project-body">
+          <h3>Sel Surya Pewarna Alami</h3>
+          <p>Proyek PKM-PE: fabrikasi DSSC (Dye-Sensitized Solar Cell) menggunakan ekstrak klorofil daun lokal sebagai fotosensitizer.</p>
+          <div class="tags"><span class="tag">PKM</span><span class="tag">Energi</span></div>
+          <div class="project-links">
+            <a href="#">Laporan →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-thumb">
+          <span class="proj-label">Riset</span>
+          <span class="emoji">📐</span>
+        </div>
+        <div class="project-body">
+          <h3>Analisis Data XRD Otomatis</h3>
+          <p>Script Python untuk analisis otomatis data XRD — identifikasi puncak, fitting Gaussian, dan perhitungan ukuran kristal (Debye-Scherrer).</p>
+          <div class="tags"><span class="tag">Python</span><span class="tag">XRD</span></div>
+          <div class="project-links">
+            <a href="#">GitHub →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-thumb">
+          <span class="proj-label">Publikasi</span>
+          <span class="emoji">📄</span>
+        </div>
+        <div class="project-body">
+          <h3>Artikel Sains Populer</h3>
+          <p>Kolom "Fisika Sehari-hari" di blog pribadi — 20+ artikel menjelaskan fenomena alam dengan bahasa sederhana. Total 15K+ pembaca.</p>
+          <div class="tags"><span class="tag">Sci-Comm</span><span class="tag">Blog</span></div>
+          <div class="project-links">
+            <a href="#">Baca →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-thumb">
+          <span class="proj-label">Eksperimen</span>
+          <span class="emoji">🌡️</span>
+        </div>
+        <div class="project-body">
+          <h3>Kalorimeter Sederhana</h3>
+          <p>Desain &amp; uji kalorimeter sederhana untuk pengukuran kalor jenis logam dengan presisi 3%. Dokumentasi lengkap dalam bentuk paper.</p>
+          <div class="tags"><span class="tag">Eksperimen</span><span class="tag">Termodinamika</span></div>
+          <div class="project-links">
+            <a href="#">Paper →</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. CERTIFICATES ================= -->
+<section id="certs">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">VI · Sertifikasi</span>
+      <h2 class="section-title">Sertifikat <em>&amp; pelatihan</em></h2>
+      <p class="section-sub">Bukti kompetensi dari pelatihan software, laboratorium, dan bahasa.</p>
+    </div>
+
+    <div class="cert-grid">
+      <div class="cert">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-body">
+          <h4>Python for Data Science</h4>
+          <p>Dicoding · 2023</p>
+          <a href="#">Lihat →</a>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-body">
+          <h4>Karakterisasi Material (XRD &amp; SEM)</h4>
+          <p>LIPI · 2023</p>
+          <a href="#">Lihat →</a>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-body">
+          <h4>TOEFL ITP — Score 583</h4>
+          <p>IIEF · 2023</p>
+          <a href="#">Lihat →</a>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-body">
+          <h4>LaTeX for Scientific Writing</h4>
+          <p>Coursera · 2022</p>
+          <a href="#">Lihat →</a>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-body">
+          <h4>Pelatihan K3 Laboratorium</h4>
+          <p>Kemnaker · 2022</p>
+          <a href="#">Lihat →</a>
+        </div>
+      </div>
+      <div class="cert">
+        <div class="cert-icon">🏅</div>
+        <div class="cert-body">
+          <h4>Workshop Fisika Komputasi</h4>
+          <p>HFI · 2024</p>
+          <a href="#">Lihat →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9. ACHIEVEMENTS ================= -->
+<section id="achievements">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">VII · Pencapaian</span>
+      <h2 class="section-title">Prestasi <em>&amp; hasil</em></h2>
+      <p class="section-sub">Beberapa milestone terukur selama menempuh studi.</p>
+    </div>
+
+    <div class="ach-table">
+      <div class="ach-table-head">
+        <span>No.</span>
+        <span>Pencapaian</span>
+        <span style="text-align:right">Nilai</span>
+      </div>
+      <div class="ach-row">
+        <div class="ach-num">01</div>
+        <div class="ach-title">IPK akhir S1 Fisika</div>
+        <div class="ach-val">3.76</div>
+      </div>
+      <div class="ach-row">
+        <div class="ach-num">02</div>
+        <div class="ach-title">Mahasiswa dibimbing praktikum</div>
+        <div class="ach-val">200+</div>
+      </div>
+      <div class="ach-row">
+        <div class="ach-num">03</div>
+        <div class="ach-title">Publikasi jurnal nasional</div>
+        <div class="ach-val">2</div>
+      </div>
+      <div class="ach-row">
+        <div class="ach-num">04</div>
+        <div class="ach-title">Juara 2 OSN Fisika Provinsi</div>
+        <div class="ach-val">2023</div>
+      </div>
+      <div class="ach-row">
+        <div class="ach-num">05</div>
+        <div class="ach-title">Finalis PKM-PE Nasional</div>
+        <div class="ach-val">2023</div>
+      </div>
+      <div class="ach-row">
+        <div class="ach-num">06</div>
+        <div class="ach-title">Semester aktif di lab riset</div>
+        <div class="ach-val">5</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10. CONTACT ================= -->
+<section id="contact">
+  <div class="container reveal">
+    <div class="section-head">
+      <span class="eyebrow">VIII · Kontak</span>
+      <h2 class="section-title">Mari <em>berkolaborasi</em></h2>
+      <p class="section-sub">
+        Terbuka untuk kolaborasi riset, diskusi ilmiah, undangan seminar,
+        atau peluang studi lanjut. Silakan hubungi saya.
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <a class="contact-card" href="mailto:email@anda.com">
+        <div class="ic">✉️</div>
+        <div class="k">Email</div>
+        <div class="v">email@anda.com</div>
+      </a>
+      <a class="contact-card" href="https://wa.me/6281234567890" target="_blank" rel="noopener">
+        <div class="ic">💬</div>
+        <div class="k">WhatsApp</div>
+        <div class="v">+62 812-3456-7890</div>
+      </a>
+      <a class="contact-card" href="https://linkedin.com/in/username" target="_blank" rel="noopener">
+        <div class="ic">💼</div>
+        <div class="k">LinkedIn</div>
+        <div class="v">in/username</div>
+      </a>
+      <a class="contact-card" href="https://github.com/username" target="_blank" rel="noopener">
+        <div class="ic">🐙</div>
+        <div class="k">GitHub</div>
+        <div class="v">@username</div>
+      </a>
+      <a class="contact-card" href="https://scholar.google.com/" target="_blank" rel="noopener">
+        <div class="ic">📚</div>
+        <div class="k">Google Scholar</div>
+        <div class="v">Profil Riset</div>
+      </a>
+      <a class="contact-card" href="https://orcid.org/" target="_blank" rel="noopener">
+        <div class="ic">🔬</div>
+        <div class="k">ORCID</div>
+        <div class="v">0000-0000-0000</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="signature">Nama Anda</div>
+  <p>© <span id="year"></span> · Laboratory Notebook Portfolio · Bandung, Indonesia</p>
+  <p style="font-size:.68rem;opacity:.7;margin-top:.6rem;letter-spacing:.5px">
+    Setiap fenomena alam adalah persamaan yang menunggu untuk dipecahkan.
+  </p>
+</footer>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ============ THEME ============ */
+  const themeBtn = document.getElementById('themeBtn');
+  const savedTheme = localStorage.getItem('theme');
+  applyTheme(savedTheme || 'light');
+
+  themeBtn.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    themeBtn.textContent = t === 'dark' ? '☀️' : '🌙';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.content = t === 'dark' ? '#141a24' : '#f8f5ee';
+  }
+
+  /* ============ HAMBURGER ============ */
+  const menuBtn  = document.getElementById('menuBtn');
+  const navLinks = document.getElementById('navLinks');
+
+  menuBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = navLinks.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.textContent = open ? '✕' : '☰';
+  });
+
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.textContent = '☰';
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!navLinks.contains(e.target) && !menuBtn.contains(e.target)){
+      navLinks.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.textContent = '☰';
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 940){
+      navLinks.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.textContent = '☰';
+    }
+  });
+
+  /* ============ REVEAL ============ */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+
+</body>
+</html>
